@@ -7,12 +7,21 @@
             ::-webkit-scrollbar { 
                 display: none; 
             }
+
+            #score {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+
+                font-family: sans-serif;
+                font-size: 20pt;
+            }
             
             #test {
                 position: absolute;
-                height: 200px;
-                width: 200px;
-                min-height: 200px;
+                height: 60px;
+                width: 60px;
+                min-height: 60px;
                 cursor: pointer;
                 border: 1px solid black;
                 border-radius: 100px;
@@ -44,27 +53,31 @@
     </head>
 
     <body>
-        <div id="test"/>
+        <div id="test"></div>
+        <div id="score">Score: 0</div>
     </body>
 
     <script>
         var timer;
+        var score = 0;
         var mouseX_prev = 0;
         var mouseY_prev = 0;
         var deltaX;
         var deltaY;
 
-        var DECAY_RATE = 0.75;
-        var GRAVITY = 0.5;
+        var DECAY_RATE = 0.65;
+        var GRAVITY = 0.15;
 
         var testId = document.getElementById("test");
+        var scoreId = document.getElementById("score");
 
         window.onload = function() {
             testId.addEventListener('mousedown', function(e) {
                     clearInterval(timer);
+                    // Drag:
                     document.onmousemove = function(e) {
-                        testId.style.top = (e.screenY - 200) + "px";
-                        testId.style.left = (e.screenX - 100) + "px";
+                        testId.style.top = (e.screenY - 120) + "px";
+                        testId.style.left = (e.screenX - 30) + "px";
 
                         deltaX = e.screenX - mouseX_prev;
                         deltaY = e.screenY - mouseY_prev;
@@ -75,35 +88,42 @@
 
             testId.addEventListener('mouseup', function(e) {
                 document.onmousemove = null;
+                clearInterval(timer);
                 timer = setInterval(setVelocity, 10);
+                score += 1;
+                writeScore();
             });
-
-            // timer = setInterval(setVelocity(), 10);
 
             function setVelocity() {
                 var currentX = parseFloat(testId.style.left);
                 var currentY = parseFloat(testId.style.top);
                 
                 // Horizontal velocity
-                if (currentX >= (window.innerWidth - 200) && deltaX > 0) {
+                if (currentX >= (window.innerWidth - 60) && deltaX > 0) {
                     deltaX = parseFloat("-" + (deltaX * DECAY_RATE));
                 } else if (currentX <= 0 && deltaX <= 0) {
                     deltaX = Math.abs(deltaX * DECAY_RATE);
                 }
                 
                 // Vertical velocity
-                if (currentY >= (window.innerHeight - 200) && deltaY > 0) {
+                if (currentY >= (window.innerHeight - 60) && deltaY > 0) {
                     deltaY = parseFloat("-" + (deltaY * DECAY_RATE));
-                } else if (currentY < 0 && deltaY < 0) {
-                    deltaY = Math.abs(deltaY * DECAY_RATE);
-                }
-                if (currentY < (window.innerHeight - 199)) {
+                    score = 0;
+                    writeScore();
+                } // else if (currentY < 0 && deltaY < 0) {
+                //     deltaY = Math.abs(deltaY * DECAY_RATE);
+                // }
+                if (currentY < (window.innerHeight - 62)) {
                     deltaY += GRAVITY;
                 }
 
 
                 testId.style.left = (currentX + deltaX + "px");
                 testId.style.top = (currentY + deltaY + "px");
+            }
+
+            function writeScore() {
+                scoreId.innerHTML = "Score: " + score;
             }
         }
     </script>
