@@ -8,19 +8,25 @@
                 display: none; 
             }
 
-            #score {
-                position: absolute;
-                top: 10px;
-                left: 10px;
-
+            #score, #highScore {
+                position: fixed;
                 font-family: sans-serif;
                 font-size: 20pt;
+            }
+            #score {
+                top: 45px;
+                left: 10px;
+            }
+
+            #highScore {
+                top: 10px;
+                left: 10px;
             }
             
             #test {
                 position: absolute;
-                height: 60px;
-                width: 60px;
+                height: 120px;
+                width: 120px;
                 min-height: 60px;
                 cursor: pointer;
                 border: 1px solid black;
@@ -55,68 +61,83 @@
     <body>
         <div id="test"></div>
         <div id="score">Score: 0</div>
+        <div id="highScore">High Score: 0</div>
     </body>
 
     <script>
-        var timer;
-        var score = 0;
-        var mouseX_prev = 0;
-        var mouseY_prev = 0;
-        var deltaX;
-        var deltaY;
-
-        var DECAY_RATE = 0.65;
-        var GRAVITY = 0.15;
-
-        var testId = document.getElementById("test");
-        var scoreId = document.getElementById("score");
-
         window.onload = function() {
-            testId.addEventListener('mousedown', function(e) {
-                    clearInterval(timer);
+            var timer;
+            var score = 0;
+            var highScore = 0;
+            var mouseX_prev = 0;
+            var mouseY_prev = 0;
+            var deltaX = 0;
+            var deltaY = 0;
+            currentX = 0;
+            currentY = 0;
+
+            var DECAY_RATE = 0.65;
+            var GRAVITY = 0.15;
+
+            var testId = document.getElementById("test");
+            var scoreId = document.getElementById("score");
+            var highScoreId = document.getElementById("highScore");
+
+            timer = setInterval(setVelocity, 10);
+            // testId.addEventListener('mousedown', function(e) {
+                    // clearInterval(timer);
                     // Drag:
-                    document.onmousemove = function(e) {
-                        testId.style.top = (e.screenY - 120) + "px";
-                        testId.style.left = (e.screenX - 30) + "px";
+                    // document.onmousemove = function(e) {
+                    //     testId.style.top = (e.screenY - 120) + "px";
+                    //     testId.style.left = (e.screenX - 30) + "px";
 
-                        deltaX = e.screenX - mouseX_prev;
-                        deltaY = e.screenY - mouseY_prev;
-                        mouseX_prev = e.screenX;
-                        mouseY_prev = e.screenY;
-                    }
-            });
-
-            testId.addEventListener('mouseup', function(e) {
-                document.onmousemove = null;
-                clearInterval(timer);
-                timer = setInterval(setVelocity, 10);
+                    //     deltaX = e.screenX - mouseX_prev;
+                    //     deltaY = e.screenY - mouseY_prev;
+                    //     mouseX_prev = e.screenX;
+                    //     mouseY_prev = e.screenY;
+                    // }
+            // });
+            testId.addEventListener('click', function(e) {
+                // console.log(e.screenX - (e.target.offsetLeft + (e.target.offsetWidth / 2)));
+                // console.log(e.screenY - (e.target.offsetTop + (e.target.offsetHeight * 2)));
                 score += 1;
                 writeScore();
-            });
+                deltaY -= (Math.abs(e.screenY - (e.target.offsetTop + (e.target.offsetHeight * 2))) * 0.1);
+                deltaX -= (e.screenX - (e.target.offsetLeft + (e.target.offsetWidth / 2))) * 0.15;
+            })
+
+            // testId.addEventListener('mouseup', function(e) {
+            //     document.onmousemove = null;
+            //     clearInterval(timer);
+            //     timer = setInterval(setVelocity, 10);
+            //     score += 1;
+            //     writeScore();
+            // });
 
             function setVelocity() {
-                var currentX = parseFloat(testId.style.left);
-                var currentY = parseFloat(testId.style.top);
+                var testId = document.getElementById("test");
+
+                currentX = parseFloat(window.getComputedStyle(testId).left);
+                currentY = parseFloat(window.getComputedStyle(testId).top);
                 
                 // Horizontal velocity
-                if (currentX >= (window.innerWidth - 60) && deltaX > 0) {
+                if (currentX >= (window.innerWidth - 120) && deltaX > 0) {
                     deltaX = parseFloat("-" + (deltaX * DECAY_RATE));
                 } else if (currentX <= 0 && deltaX <= 0) {
                     deltaX = Math.abs(deltaX * DECAY_RATE);
                 }
                 
                 // Vertical velocity
-                if (currentY >= (window.innerHeight - 60) && deltaY > 0) {
+                if (currentY >= (window.innerHeight - 120) && deltaY > 0) {
                     deltaY = parseFloat("-" + (deltaY * DECAY_RATE));
                     score = 0;
                     writeScore();
                 } // else if (currentY < 0 && deltaY < 0) {
                 //     deltaY = Math.abs(deltaY * DECAY_RATE);
                 // }
-                if (currentY < (window.innerHeight - 62)) {
+                if (currentY < (window.innerHeight - 120)) {
                     deltaY += GRAVITY;
                 }
-
 
                 testId.style.left = (currentX + deltaX + "px");
                 testId.style.top = (currentY + deltaY + "px");
@@ -124,6 +145,10 @@
 
             function writeScore() {
                 scoreId.innerHTML = "Score: " + score;
+                if (score > highScore) {
+                    highScore = score;
+                    highScoreId.innerHTML = "High Score: " + highScore;
+                }
             }
         }
     </script>
