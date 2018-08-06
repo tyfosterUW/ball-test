@@ -45,7 +45,6 @@
         <div id="test"></div>
         <div id="score">Score: 0</div>
         <div id="highScore">High Score: 0</div>
-    </body>
 
     <script>
         window.onload = function() {
@@ -84,7 +83,14 @@
                 score += 1;
                 writeScore();
                 deltaY = -8 - parseFloat(Math.abs(e.clientY - (e.target.offsetTop + (e.target.clientHeight / 2))) / 25);
-                deltaX -= (e.clientX - (e.target.offsetLeft + (e.target.offsetWidth / 2))) * 0.15;
+                deltaX = -1 * ((e.clientX - (e.target.offsetLeft + (e.target.offsetWidth / 2))) * 0.15);
+            })
+
+            testId.addEventListener('touchstart', function(e) {
+                score += 1;
+                writeScore();
+                deltaY = -8 - parseFloat(Math.abs(e.clientY - (e.target.offsetTop + (e.target.clientHeight / 2))) / 25);
+                deltaX = -1 * ((e.clientX - (e.target.offsetLeft + (e.target.offsetWidth / 2))) * 0.15);
             })
 
             // testId.addEventListener('mouseup', function(e) {
@@ -102,10 +108,8 @@
                 currentY = parseFloat(window.getComputedStyle(testId).top);
                 
                 // Horizontal velocity
-                if (currentX >= (window.innerWidth - 120) && deltaX > 0) {
-                    deltaX = parseFloat("-" + (deltaX * DECAY_RATE));
-                } else if (currentX <= 0 && deltaX <= 0) {
-                    deltaX = Math.abs(deltaX * DECAY_RATE);
+                if ((currentX >= (window.innerWidth - 120) && deltaX > 0) || (currentX <= 0 && deltaX <= 0)) {
+                    deltaX = -1 * (deltaX * DECAY_RATE);
                 }
                 
                 // Vertical velocity
@@ -113,7 +117,9 @@
                     deltaY = parseFloat("-" + (deltaY * DECAY_RATE));
                     score = 0;
                     writeScore();
-                } // else if (currentY < 0 && deltaY < 0) {
+                }
+                // Make the top of the viewport a boundary:
+                // else if (currentY < 0 && deltaY < 0) {
                 //     deltaY = Math.abs(deltaY * DECAY_RATE);
                 // }
                 if (currentY < (window.innerHeight - 120)) {
@@ -133,4 +139,5 @@
             }
         }
     </script>
+    </body>
 </html>
