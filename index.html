@@ -2,7 +2,11 @@
 
 <html>
     <head>
-        <title>Ball Sandbox</title>
+        <title>Juggle</title>
+        <link rel="icon"
+                href="icon.png"
+                type="image/png"
+                />
         <style>
             ::-webkit-scrollbar { 
                 display: none; 
@@ -33,29 +37,7 @@
                 border: 1px solid black;
                 border-radius: 100px;
                 background-color: black;
-
-                /* animation-duration: 3s;
-                animation-name: drop;
-                animation-fill-mode: forwards; */
             }
-
-            /* @keyframes drop {
-                from {
-                    top: 0px;
-                    left: 0px;
-                }
-
-                50% {
-                    top: 50px;
-                    left: 50px;
-                    
-                }
-
-                to {
-                    top: calc(100% - 200px);
-                    left: 200px;
-                }
-            } */
         </style>
     </head>
 
@@ -101,7 +83,7 @@
             testId.addEventListener('click', function(e) {
                 score += 1;
                 writeScore();
-                deltaY = -8 - parseInt(Math.abs(e.clientY - (e.target.offsetTop + (e.target.clientHeight / 2))) / 25);
+                deltaY = -8 - parseFloat(Math.abs(e.clientY - (e.target.offsetTop + (e.target.clientHeight / 2))) / 25);
                 deltaX -= (e.clientX - (e.target.offsetLeft + (e.target.offsetWidth / 2))) * 0.15;
             })
 
