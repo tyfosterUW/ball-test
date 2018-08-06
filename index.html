@@ -25,6 +25,7 @@
             
             #test {
                 position: absolute;
+                top: 500px;
                 height: 120px;
                 width: 120px;
                 min-height: 60px;
@@ -83,7 +84,7 @@
             var scoreId = document.getElementById("score");
             var highScoreId = document.getElementById("highScore");
 
-            timer = setInterval(setVelocity, 10);
+            timer = setInterval(setVelocity, 12);
             // testId.addEventListener('mousedown', function(e) {
                     // clearInterval(timer);
                     // Drag:
@@ -98,12 +99,10 @@
                     // }
             // });
             testId.addEventListener('click', function(e) {
-                // console.log(e.screenX - (e.target.offsetLeft + (e.target.offsetWidth / 2)));
-                // console.log(e.screenY - (e.target.offsetTop + (e.target.offsetHeight * 2)));
                 score += 1;
                 writeScore();
-                deltaY -= (Math.abs(e.screenY - (e.target.offsetTop + (e.target.offsetHeight * 2))) * 0.1);
-                deltaX -= (e.screenX - (e.target.offsetLeft + (e.target.offsetWidth / 2))) * 0.15;
+                deltaY = -8 - parseInt(Math.abs(e.clientY - (e.target.offsetTop + (e.target.clientHeight / 2))) / 25);
+                deltaX -= (e.clientX - (e.target.offsetLeft + (e.target.offsetWidth / 2))) * 0.15;
             })
 
             // testId.addEventListener('mouseup', function(e) {
